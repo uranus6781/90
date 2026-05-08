@@ -1,91 +1,22 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Tps Turku vs Hjk Helsinki - 22:00 08/05/2026 (Đang trực tiếp)
+#PLAYLIST:Bóng Đá Trực Tiếp - Bún Chả TV
+
+#EXTINF:-1 tvg-id="1" tvg-name="Metallurg Lipetsk vs Fk Spartak Tambov" tvg-logo="https://ui-avatars.com/api/?name=Metallurg%20Lipetsk&size=256&background=random&color=fff&bold=true&format=png" group-title="⚽ Bóng Đá Trực Tiếp" ,🔴 Metallurg Lipetsk vs Fk Spartak Tambov - 20:26 2200/08/05 (Đang trực tiếp)
+#EXTIMG:https://ui-avatars.com/api/?name=Metallurg%20Lipetsk&size=256&background=random&color=fff&bold=true&format=png
 https://example.com/video-cho.mp4
 
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Chaika Peschanokopskoe vs Chernomorets Novorossijsk - 22:00 08/05/2026 (Đang trực tiếp)
+#EXTINF:-1 tvg-id="2" tvg-name="Etoile Filante De Lome vs Unisport De Sokode" tvg-logo="https://ui-avatars.com/api/?name=Etoile%20Filante%20De%20Lome&size=256&background=random&color=fff&bold=true&format=png" group-title="⚽ Bóng Đá Trực Tiếp" ,🔴 Etoile Filante De Lome vs Unisport De Sokode - 20:26 2230/08/05 (Đang trực tiếp)
+#EXTIMG:https://ui-avatars.com/api/?name=Etoile%20Filante%20De%20Lome&size=256&background=random&color=fff&bold=true&format=png
 https://example.com/video-cho.mp4
 
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Fc Haka vs Ekenas If Fotboll - 22:30 08/05/2026 (Đang trực tiếp)
+#EXTINF:-1 tvg-id="3" tvg-name="Karlovac vs Rudes" tvg-logo="https://ui-avatars.com/api/?name=Karlovac&size=256&background=random&color=fff&bold=true&format=png" group-title="⚽ Bóng Đá Trực Tiếp" ,🔴 Karlovac vs Rudes - 20:26 2245/08/05 (Đang trực tiếp)
+#EXTIMG:https://ui-avatars.com/api/?name=Karlovac&size=256&background=random&color=fff&bold=true&format=png
 https://example.com/video-cho.mp4
 
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Sabah Baku vs Fk Kapaz Ganca - 22:30 08/05/2026 (Đang trực tiếp)
+#EXTINF:-1 tvg-id="4" tvg-name="Rakow Czestochowa vs Korona Kielce" tvg-logo="https://ui-avatars.com/api/?name=Rakow%20Czestochowa&size=256&background=random&color=fff&bold=true&format=png" group-title="⚽ Bóng Đá Trực Tiếp" ,🔴 Rakow Czestochowa vs Korona Kielce - 20:26 2300/08/05 (Đang trực tiếp)
+#EXTIMG:https://ui-avatars.com/api/?name=Rakow%20Czestochowa&size=256&background=random&color=fff&bold=true&format=png
 https://example.com/video-cho.mp4
 
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Be1 Nfa vs Siauliai B - 22:30 08/05/2026 (Đang trực tiếp)
+#EXTINF:-1 tvg-id="5" tvg-name="Inter Milan U20 vs Verona U20" tvg-logo="https://ui-avatars.com/api/?name=Inter%20Milan%20U20&size=256&background=random&color=fff&bold=true&format=png" group-title="⚽ Bóng Đá Trực Tiếp" ,🔴 Inter Milan U20 vs Verona U20 - 20:26 2300/08/05 (Đang trực tiếp)
+#EXTIMG:https://ui-avatars.com/api/?name=Inter%20Milan%20U20&size=256&background=random&color=fff&bold=true&format=png
 https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Etoile Filante De Lome vs Unisport De Sokode - 22:30 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Karlovac vs Rudes - 22:45 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Rakow Czestochowa vs Korona Kielce - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Inter Milan U20 vs Verona U20 - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Sku Amstetten vs Sk Austria Klagenfurt - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Sv Austria Salzburg vs Austria Lustenau - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Sc Bregenz vs Fk Austria Vienna Youth - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Spg Wels vs Sturm Graz Youth - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Kapfenberg vs Stpolten - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Fc Liefering vs Trenkwalder Admira Wacker - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Rapid Vienna Youth vs First Wien 1894 - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Tartu Jk Maag Tammeka vs Fc Kuressaare - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Rigas Futbola Skola vs Fk Liepaja - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Hobro vs Boldklubben Af 1893 - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Vojvodina Novi Sad vs Fk Ukariki - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Thisted Fc vs Ab Akademisk - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Al Shahaniya vs Alkhuraitiat - 23:00 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", 1 Fc Kaiserslautern vs Arminia Bielefeld - 23:30 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Sc Paderborn 07 vs Karlsruher Sc - 23:30 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Bronshoj vs Fa 2000 - 23:30 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Odder Igf vs If Lyseng - 23:45 08/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Viborg vs Sonderjyske - 00:00 09/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Cska 1948 Sofia vs Cska Sofia - 00:00 09/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Al Hilal vs Al Kholood - 01:00 09/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
-#EXTINF:-1 tvg-logo="https://cdn.sofascore.app/api/v1/team/placeholder/image" group-title="Bún Chả TV", Borussia Dortmund vs Eintracht Frankfurt - 01:30 09/05/2026 (Đang trực tiếp)
-https://example.com/video-cho.mp4
-
