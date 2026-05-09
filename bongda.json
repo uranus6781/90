@@ -1,8 +1,8 @@
 {
   "playlist_name": "Sáng TV",
-  "last_updated": "19:53 09/05/2026",
-  "total_live": 10,
-  "total_streams": 0,
+  "last_updated": "20:01 09/05/2026",
+  "total_live": 3,
+  "total_streams": 3,
   "buncha": [
     {
       "id": "1",
@@ -10,8 +10,8 @@
       "doi_nha": "Parma U20",
       "doi_khach": "Ac Milan U20",
       "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
+      "trang_thai": "Đã kết thúc 🏁",
+      "is_live": false,
       "logo_nha": "https://ui-avatars.com/api/?name=Pa&size=200&background=1565C0&color=ffffff&bold=true",
       "logo_khach": "https://ui-avatars.com/api/?name=Ac&size=200&background=1565C0&color=ffffff&bold=true",
       "stream_url": "https://example.com/waiting.mp4",
@@ -19,120 +19,55 @@
     },
     {
       "id": "2",
-      "title": "Vfl Bochum 1848 vs Hannover 96",
-      "doi_nha": "Vfl Bochum 1848",
-      "doi_khach": "Hannover 96",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Vf&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Ha&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/vfl-bochum-1848-vs-hannover-96-1800-09-05-2026/601445365"
-    },
-    {
-      "id": "3",
-      "title": "Eintracht Braunschweig vs Dynamo Dresden",
-      "doi_nha": "Eintracht Braunschweig",
-      "doi_khach": "Dynamo Dresden",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Ei&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Dy&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/eintracht-braunschweig-vs-dynamo-dresden-1800-09-05-2026/601445368"
-    },
-    {
-      "id": "4",
-      "title": "Holstein Kiel vs 1 Fc Magdeburg",
-      "doi_nha": "Holstein Kiel",
-      "doi_khach": "1 Fc Magdeburg",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Ho&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=1%20&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/holstein-kiel-vs-1-fc-magdeburg-1800-09-05-2026/601445371"
-    },
-    {
-      "id": "5",
-      "title": "Lysekloster vs Pors Grenland",
-      "doi_nha": "Lysekloster",
-      "doi_khach": "Pors Grenland",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Ly&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Po&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/lysekloster-vs-pors-grenland-1800-09-05-2026/601445386"
-    },
-    {
-      "id": "6",
-      "title": "Bk Olympic vs Kristianstads Ff",
-      "doi_nha": "Bk Olympic",
-      "doi_khach": "Kristianstads Ff",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Bk&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Kr&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/bk-olympic-vs-kristianstads-ff-1800-09-05-2026/601445404"
-    },
-    {
-      "id": "7",
-      "title": "Fc Arlanda vs Sollentuna United",
-      "doi_nha": "Fc Arlanda",
-      "doi_khach": "Sollentuna United",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Fc&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=So&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/fc-arlanda-vs-sollentuna-united-1800-09-05-2026/601445407"
-    },
-    {
-      "id": "8",
-      "title": "Umea Fc vs Gefle If",
-      "doi_nha": "Umea Fc",
-      "doi_khach": "Gefle If",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Um&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Ge&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/umea-fc-vs-gefle-if-1800-09-05-2026/601445410"
-    },
-    {
-      "id": "9",
-      "title": "Slavia Mozyr vs Fc Minsk",
-      "doi_nha": "Slavia Mozyr",
-      "doi_khach": "Fc Minsk",
-      "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "logo_nha": "https://ui-avatars.com/api/?name=Sl&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Fc&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://bunchatv4.net/truc-tiep/slavia-mozyr-vs-fc-minsk-1800-09-05-2026/601445467"
-    },
-    {
-      "id": "10",
       "title": "Clb Thanh Hoa vs Tt Hanoi",
       "doi_nha": "Clb Thanh Hoa",
       "doi_khach": "Tt Hanoi",
       "thoi_gian": "18:00 09/05/2026",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
+      "trang_thai": "Đã kết thúc 🏁",
+      "is_live": false,
       "logo_nha": "https://ui-avatars.com/api/?name=Cl&size=200&background=1565C0&color=ffffff&bold=true",
       "logo_khach": "https://ui-avatars.com/api/?name=Tt&size=200&background=1565C0&color=ffffff&bold=true",
       "stream_url": "https://example.com/waiting.mp4",
       "link_xem": "https://bunchatv4.net/truc-tiep/clb-thanh-hoa-vs-tt-hanoi-1800-09-05-2026/601445470"
+    },
+    {
+      "id": "3",
+      "title": "Hegelmann Litauen vs Siauliai",
+      "doi_nha": "Hegelmann Litauen",
+      "doi_khach": "Siauliai",
+      "thoi_gian": "18:15 09/05/2026",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "logo_nha": "https://ui-avatars.com/api/?name=He&size=200&background=1565C0&color=ffffff&bold=true",
+      "logo_khach": "https://ui-avatars.com/api/?name=Si&size=200&background=1565C0&color=ffffff&bold=true",
+      "stream_url": "https://live.rapidlive.shop/live/f5ea2c7d61946c1742b9bf4c30788ea0/playlist.m3u8",
+      "link_xem": "https://bunchatv4.net/truc-tiep/hegelmann-litauen-vs-siauliai-1815-09-05-2026/601445545"
+    },
+    {
+      "id": "4",
+      "title": "Ningbo Team vs Wenzhou Team",
+      "doi_nha": "Ningbo Team",
+      "doi_khach": "Wenzhou Team",
+      "thoi_gian": "18:30 09/05/2026",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "logo_nha": "https://ui-avatars.com/api/?name=Ni&size=200&background=1565C0&color=ffffff&bold=true",
+      "logo_khach": "https://ui-avatars.com/api/?name=We&size=200&background=1565C0&color=ffffff&bold=true",
+      "stream_url": "https://live.rapidlive.shop/live/151d5c3ca489e576f3617e8c2b073f9f/playlist.m3u8",
+      "link_xem": "https://bunchatv4.net/truc-tiep/ningbo-team-vs-wenzhou-team-1830-09-05-2026/601444978"
+    },
+    {
+      "id": "5",
+      "title": "Liverpool vs Chelsea",
+      "doi_nha": "Liverpool",
+      "doi_khach": "Chelsea",
+      "thoi_gian": "18:30 09/05/2026",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "logo_nha": "https://ui-avatars.com/api/?name=Li&size=200&background=1565C0&color=ffffff&bold=true",
+      "logo_khach": "https://ui-avatars.com/api/?name=Ch&size=200&background=1565C0&color=ffffff&bold=true",
+      "stream_url": "https://cdn-hls.taoxanh.biz/live/69ff0dfd203f5_28/index.m3u8?expire=1778927741&amp;sign=dbd40a4de2dfd0aae40c217f985e2336",
+      "link_xem": "https://bunchatv4.net/truc-tiep/liverpool-vs-chelsea-1830-09-05-2026/601445551"
     }
   ],
   "hoiquan": [
@@ -151,19 +86,6 @@
     },
     {
       "id": "2",
-      "title": "Phu Dong vs Hai Phong.Lrxfwtagqf",
-      "doi_nha": "Phu Dong",
-      "doi_khach": "Hai Phong.Lrxfwtagqf",
-      "thoi_gian": "Unknown",
-      "trang_thai": "Chưa đá ⏳",
-      "is_live": false,
-      "logo_nha": "https://ui-avatars.com/api/?name=Ph&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Ha&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/vleague-1.U9-8pk5qCM/phu-dong-vs-hai-phong.LrXFWTagQf/7236"
-    },
-    {
-      "id": "3",
       "title": "Liverpool vs Chelsea.6_3Efqhtmd",
       "doi_nha": "Liverpool",
       "doi_khach": "Chelsea.6_3Efqhtmd",
@@ -176,7 +98,7 @@
       "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/premier-league-trung-lap.rIcTpw9h1q/liverpool-vs-chelsea.6_3EFqHTmD/7283"
     },
     {
-      "id": "4",
+      "id": "3",
       "title": "Liverpool vs Chelsea.Svgtnsfxli",
       "doi_nha": "Liverpool",
       "doi_khach": "Chelsea.Svgtnsfxli",
@@ -189,7 +111,7 @@
       "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/premier-league-dau-cau-fan-ars.apJT8E44Z6/liverpool-vs-chelsea.SvgtnSFxLI/7316"
     },
     {
-      "id": "5",
+      "id": "4",
       "title": "Liverpool vs Chelsea.Djxq9M1Y5C",
       "doi_nha": "Liverpool",
       "doi_khach": "Chelsea.Djxq9M1Y5C",
@@ -202,7 +124,7 @@
       "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/premier-league-dau-cau-fan-mc.LsCwyPnT8h/liverpool-vs-chelsea.DjXQ9M1Y5C/7317"
     },
     {
-      "id": "6",
+      "id": "5",
       "title": "Vfb Stuttgart vs Bayer Leverkusen.N40Ybwyuos",
       "doi_nha": "Vfb Stuttgart",
       "doi_khach": "Bayer Leverkusen.N40Ybwyuos",
@@ -213,58 +135,6 @@
       "logo_khach": "https://ui-avatars.com/api/?name=Ba&size=200&background=1565C0&color=ffffff&bold=true",
       "stream_url": "https://example.com/waiting.mp4",
       "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/bundesliga-1758631341946/vfb-stuttgart-vs-bayer-leverkusen.n40yBwYUos/7241"
-    },
-    {
-      "id": "7",
-      "title": "Brighton vs Wolves.Nziihnzk4X",
-      "doi_nha": "Brighton",
-      "doi_khach": "Wolves.Nziihnzk4X",
-      "thoi_gian": "Unknown",
-      "trang_thai": "Chưa đá ⏳",
-      "is_live": false,
-      "logo_nha": "https://ui-avatars.com/api/?name=Br&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Wo&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/premier-league-1758631271470/brighton-vs-wolves.nzIIHnZk4x/7242"
-    },
-    {
-      "id": "8",
-      "title": "Fulham vs Bournemouth.Bfko 6K6Nu",
-      "doi_nha": "Fulham",
-      "doi_khach": "Bournemouth.Bfko 6K6Nu",
-      "thoi_gian": "Unknown",
-      "trang_thai": "Chưa đá ⏳",
-      "is_live": false,
-      "logo_nha": "https://ui-avatars.com/api/?name=Fu&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Bo&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/premier-league-1758631271470/fulham-vs-bournemouth.BfKo-6K6nU/7243"
-    },
-    {
-      "id": "9",
-      "title": "Sunderland vs Manchester United.Uf6Goilhnb",
-      "doi_nha": "Sunderland",
-      "doi_khach": "Manchester United.Uf6Goilhnb",
-      "thoi_gian": "Unknown",
-      "trang_thai": "Chưa đá ⏳",
-      "is_live": false,
-      "logo_nha": "https://ui-avatars.com/api/?name=Su&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Ma&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/premier-league-1758631271470/sunderland-vs-manchester-united.uf6goIlhnB/7284"
-    },
-    {
-      "id": "10",
-      "title": "Sunderland vs Manchester United.Hgpxy1S5F4",
-      "doi_nha": "Sunderland",
-      "doi_khach": "Manchester United.Hgpxy1S5F4",
-      "thoi_gian": "Unknown",
-      "trang_thai": "Chưa đá ⏳",
-      "is_live": false,
-      "logo_nha": "https://ui-avatars.com/api/?name=Su&size=200&background=1565C0&color=ffffff&bold=true",
-      "logo_khach": "https://ui-avatars.com/api/?name=Ma&size=200&background=1565C0&color=ffffff&bold=true",
-      "stream_url": "https://example.com/waiting.mp4",
-      "link_xem": "https://sv2.hoiquan3.live/truc-tiep/bong-da/premier-league-1758631271470/sunderland-vs-manchester-united.hgpxY1S5f4/7318"
     }
   ]
 }
