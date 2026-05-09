@@ -19,11 +19,11 @@ LIMIT_MATCHES = 10
 MAX_STREAM_WAIT = 25
 STREAM_POLL_INTERVAL = 1
 
-# VÁ LỖI 1: Ép cứng múi giờ Việt Nam (UTC+7) cho máy chủ GitHub Actions
+# Ép cứng múi giờ Việt Nam (UTC+7) cho máy chủ GitHub Actions
 VN_TZ = datetime.timezone(datetime.timedelta(hours=7))
 
 LOGO_CACHE = {}
-_HEADERS = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"}
+_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
 # ==========================================
 # CHUẨN HÓA TÊN ĐỘI
@@ -53,7 +53,7 @@ _TEAM_NAME_MAP = {
     "Melbourne City Fc": "Melbourne City FC", "Melbourne Victory": "Melbourne Victory",
     "Western Sydney Wanderers": "Western Sydney Wanderers FC",
     "Wellington Phoenix": "Wellington Phoenix FC",
-    # Anh, TBN, Đức, Pháp, Ý (Giữ nguyên map của bạn)...
+    # Châu Âu
     "Man Utd": "Manchester United FC", "Man City": "Manchester City FC",
     "Tottenham": "Tottenham Hotspur FC", "Wolves": "Wolverhampton Wanderers FC",
     "Brighton": "Brighton & Hove Albion FC", "Newcastle Utd": "Newcastle United FC",
@@ -77,47 +77,76 @@ def normalize_team_name(raw: str) -> str:
     return cleaned.strip()
 
 # ==========================================
-# LẤY LOGO: WIKIPEDIA → THESPORTSDB → FALLBACK
+# LẤY LOGO: BỘ 3 QUÉT ẢNH TỐI THƯỢNG
 # ==========================================
-def _logo_wikipedia(team_name: str) -> str | None:
+def _logo_football_logos_cc(team_name: str) -> str | None:
+    """ƯU TIÊN SỐ 1: Cào ảnh từ football-logos.cc (Chất lượng vector cực cao)"""
     try:
-        r = requests.get("https://en.wikipedia.org/w/api.php", params={
-            "action": "query", "list": "search", "srsearch": f"{team_name} football club",
-            "srlimit": 1, "format": "json"}, headers=_HEADERS, timeout=4)
-        results = r.json().get("query", {}).get("search", [])
-        if not results: return None
-        page_title = results[0]["title"]
-        r2 = requests.get("https://en.wikipedia.org/w/api.php", params={
-            "action": "query", "titles": page_title, "prop": "pageimages", 
-            "pithumbsize": 200, "format": "json"}, headers=_HEADERS, timeout=4)
-        pages = r2.json().get("query", {}).get("pages", {})
-        for page in pages.values():
-            thumb = page.get("thumbnail", {}).get("source")
-            if thumb: return thumb
+        search_term = team_name.lower().replace(" ", "-")
+        search_url = f"https://football-logos.cc/search?q={search_term}"
+        r = requests.get(search_url, headers=_HEADERS, timeout=4)
+        match = re.search(r'src="(https://football-logos.cc/logos/[^"]+\.png)"', r.text)
+        if match:
+            return match.group(1)
     except Exception: pass
     return None
 
-def _logo_thesportsdb(team_name: str) -> str | None:
+def _logo_espn(team_name: str) -> str | None:
+    """ƯU TIÊN SỐ 2: API ESPN cho các giải đấu Châu Âu / Thế Giới"""
     try:
-        r = requests.get("https://www.thesportsdb.com/api/v1/json/3/searchteams.php", params={"t": team_name}, headers=_HEADERS, timeout=4)
-        teams = r.json().get("teams")
-        if teams:
-            logo = teams[0].get("strTeamBadge") or teams[0].get("strTeamLogo")
-            if logo: return logo + "/preview" if not logo.endswith("/preview") else logo
+        r = requests.get(
+            "https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams",
+            params={"search": team_name}, headers=_HEADERS, timeout=4
+        )
+        data = r.json()
+        sports = data.get("sports", [])
+        if sports:
+            leagues = sports[0].get("leagues", [])
+            if leagues:
+                teams = leagues[0].get("teams", [])
+                if teams:
+                    logos = teams[0].get("team", {}).get("logos", [])
+                    if logos: return logos[0].get("href")
+    except Exception: pass
+    return None
+
+def _logo_fotmob(team_name: str) -> str | None:
+    """ƯU TIÊN SỐ 3: API FotMob bao thầu dữ liệu giải Châu Á"""
+    try:
+        r = requests.get(
+            "https://apigw.fotmob.com/searchapi/suggest",
+            params={"term": team_name, "lang": "vi"}, headers=_HEADERS, timeout=4
+        )
+        match = re.search(r'"id"\s*:\s*"?(\d+)"?\s*,\s*"type"\s*:\s*"team"', r.text)
+        if match:
+            team_id = match.group(1)
+            return f"https://images.fotmob.com/image_resources/logo/teamlogo/{team_id}.png"
     except Exception: pass
     return None
 
 def _logo_fallback(team_name: str) -> str:
+    """DỰ PHÒNG CUỐI CÙNG: Logo chữ cái"""
     initials = "".join(w[0].upper() for w in team_name.split()[:3] if w)
     return f"https://ui-avatars.com/api/?name={requests.utils.quote(initials)}&size=200&background=1565C0&color=ffffff&bold=true&format=png"
 
 def get_team_logo(team_name: str) -> str:
-    if not team_name or team_name == "Unknown": return _logo_fallback("?")
+    if not team_name or team_name == "Unknown":
+        return _logo_fallback("?")
+
     search_name = normalize_team_name(team_name)
     if search_name in LOGO_CACHE: return LOGO_CACHE[search_name]
-    logo = _logo_wikipedia(search_name) or _logo_thesportsdb(search_name) or _logo_fallback(team_name)
+
+    # THỨ TỰ ƯU TIÊN MỚI
+    logo = (
+        _logo_football_logos_cc(search_name)
+        or _logo_espn(search_name)
+        or _logo_fotmob(search_name)
+        or _logo_fallback(team_name)
+    )
+
     LOGO_CACHE[search_name] = logo
     LOGO_CACHE[team_name] = logo
+    print(f"      🏷  [{team_name}] → [{search_name}]: {logo[:55]}...")
     return logo
 
 # ==========================================
@@ -148,6 +177,7 @@ _AD_KEYWORDS = ["ads", "ad.", "/ad/", "advertisement", "doubleclick", "googlesyn
 _SKIP_SELECTORS = [
     ".skip-ad-btn", ".vast-skip-button", ".skip-button", "[class*='skip']", "[id*='skip']",
     "xpath=//*[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'bỏ qua')]",
+    "xpath=//*[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'skip ad')]",
 ]
 
 def _trigger_player(page) -> None:
@@ -161,6 +191,10 @@ def _trigger_player(page) -> None:
                 btn.click(timeout=800)
                 break
         except Exception: pass
+    try:
+        vp = page.viewport_size
+        if vp: page.mouse.click(vp["width"] / 2, vp["height"] / 2)
+    except Exception: pass
 
 def _try_skip_ad(page) -> bool:
     for sel in _SKIP_SELECTORS:
@@ -206,7 +240,9 @@ def capture_stream(page, match_url: str) -> str | None:
     finally:
         try: page.remove_listener("request", on_request)
         except Exception: pass
-    return ([s for s in streams if "live" in s.lower()] or streams or [None])[-1]
+    
+    live_streams = [s for s in streams if "live" in s.lower()]
+    return (live_streams or streams or [None])[-1]
 
 # ==========================================
 # TẠO JSON & PUSH LÊN GITHUB
@@ -216,7 +252,7 @@ def create_json(matches_data: list) -> str:
         "playlist_name": "Sáng TV",
         "last_updated": datetime.datetime.now(VN_TZ).strftime("%H:%M %d/%m/%Y"),
         "total_live": sum(1 for m in matches_data if m.get("is_live")),
-        "total_streams": sum(1 for m in matches_data if m.get("luong_video")),
+        "total_streams": sum(1 for m in matches_data if m.get("luong_video") and m.get("luong_video") != WAITING_VIDEO_URL),
         "matches": matches_data,
     }
     return json.dumps(export, indent=2, ensure_ascii=False)
@@ -226,7 +262,8 @@ def push_to_github(content: str, live: int, streams: int) -> None:
         print("⚠️  Không có GH_TOKEN, lưu local.")
         with open(FILE_PATH, "w", encoding="utf-8") as f: f.write(content)
         return
-    g, repo = Github(GITHUB_TOKEN), Github(GITHUB_TOKEN).get_repo(REPO_NAME)
+    g = Github(GITHUB_TOKEN)
+    repo = g.get_repo(REPO_NAME)
     msg = f"⚽ Cập nhật: {datetime.datetime.now(VN_TZ).strftime('%H:%M %d/%m/%Y')} — {live} live, {streams} streams"
     try:
         existing = repo.get_contents(FILE_PATH)
@@ -280,7 +317,7 @@ def scrape_and_push():
                 if href and not href.startswith("http"): href = "/".join(TARGET_SITE.split("/")[:3]) + href
                 doi_nha, doi_khach, thoi_gian = parse_url_to_info(href)
 
-                # VÁ LỖI 3: Thử bóc Logo ẩn từ thẻ <img> gốc trên web trước
+                # Lấy Logo từ Web trước
                 logo_nha, logo_khach = "", ""
                 try:
                     imgs = el.locator("img").all()
@@ -291,21 +328,21 @@ def scrape_and_push():
                         if src_khach and ".gif" not in src_khach: logo_khach = src_khach if src_khach.startswith("http") else f"https://bunchatv4.net{src_khach}"
                 except Exception: pass
                 
-                # Nếu web mờ logo thì gọi hàm tra cứu API dự phòng của bạn
+                # Gọi hệ thống cào Logo nếu trên web thiếu ảnh
                 if not logo_nha: logo_nha = get_team_logo(doi_nha)
                 if not logo_khach: logo_khach = get_team_logo(doi_khach)
 
-                # VÁ LỖI 2: Check trạng thái LIVE bằng thời gian thực tế thay vì dò chữ tĩnh
+                # Thuật toán LIVE theo thời gian thực (Tránh web báo ảo)
                 is_live, status = False, "Chưa đá ⏳"
                 try:
                     match_time = datetime.datetime.strptime(thoi_gian, "%H:%M %d/%m/%Y").replace(tzinfo=VN_TZ)
                     diff_minutes = (datetime.datetime.now(VN_TZ) - match_time).total_seconds() / 60
-                    if -10 <= diff_minutes <= 120:  # Trước 10p và trong 120p diễn ra
+                    if -10 <= diff_minutes <= 120:  
                         is_live, status = True, "Đang trực tiếp 🔴"
                     elif diff_minutes > 120:
                         status = "Đã kết thúc 🏁"
                 except Exception:
-                    # Phương án chống cháy nếu ngày giờ bị web gõ sai
+                    # Phương án cứu cánh
                     if any(kw in el.inner_text().upper() for kw in ["LIVE", "HIỆP", "PHÚT"]):
                         is_live, status = True, "Đang trực tiếp 🔴"
 
@@ -336,8 +373,11 @@ def scrape_and_push():
         print("\n❌ Không có dữ liệu!")
         return
 
-    push_to_github(create_json(matches_data), sum(1 for m in matches_data if m["is_live"]), sum(1 for m in matches_data if m["stream_url"] != WAITING_VIDEO_URL))
-    print(f"\n{'='*65}\n✅ XONG — Hoàn tất quá trình lấy dữ liệu\n{'='*65}")
+    live_cnt = sum(1 for m in matches_data if m["is_live"])
+    stream_cnt = sum(1 for m in matches_data if m["stream_url"] != WAITING_VIDEO_URL)
+    push_to_github(create_json(matches_data), live_cnt, stream_cnt)
+    
+    print(f"\n{'='*65}\n✅ XONG — {len(matches_data)} trận | {live_cnt} live | {stream_cnt} có luồng\n{'='*65}")
 
 if __name__ == "__main__":
     scrape_and_push()
