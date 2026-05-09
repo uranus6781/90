@@ -6,84 +6,113 @@ import datetime
 import requests
 
 from github import Github
-from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+from playwright.sync_api import sync_playwright
+from playwright.sync_api import TimeoutError as PWTimeout
 from playwright_stealth import Stealth
 
 # =========================================================
 # CONFIG
 # =========================================================
-TARGET_SITE = "https://bunchatv4.net/truc-tiep-bong-da-xoilac-tv"
 
-GITHUB_TOKEN = os.getenv("GH_TOKEN")
-REPO_NAME = os.getenv("GH_REPO", "Eternal161/dausoco")
+TARGET_SITE = "https://bunchatv4.net/truc-tiep-bong-da-xoilac-tv"
 
 FILE_PATH = "bongda.json"
 
-WAITING_VIDEO_URL = "https://example.com/video-cho.mp4"
+WAITING_VIDEO_URL = "https://example.com/waiting.mp4"
 
 LIMIT_MATCHES = 15
 
-VN_TZ = datetime.timezone(datetime.timedelta(hours=7))
+VN_TZ = datetime.timezone(
+    datetime.timedelta(hours=7)
+)
+
+GITHUB_TOKEN = os.getenv("GH_TOKEN")
+
+REPO_NAME = os.getenv(
+    "GH_REPO",
+    "Eternal161/dausoco"
+)
 
 _HEADERS = {
     "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Mozilla/5.0 "
+        "(Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 "
+        "(KHTML, like Gecko) "
         "Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+    )
 }
 
 LOGO_CACHE = {}
 
 # =========================================================
-# TEAM NAME
-# =========================================================
-def normalize_team_name(raw: str) -> str:
-
-    cleaned = re.sub(r"\bFc\b$", "FC", raw)
-    cleaned = re.sub(r"\bFootball Club\b", "FC", cleaned)
-
-    return cleaned.strip()
-
-
-# =========================================================
 # LOGO
 # =========================================================
-def _logo_fallback(team_name: str):
 
-    initials = "".join(
-        w[0].upper()
-        for w in team_name.split()[:3]
-        if w
-    )
+def normalize_team_name(name):
 
-    return (
-        "https://ui-avatars.com/api/?name="
-        f"{requests.utils.quote(initials)}"
-        "&size=200&background=1565C0&color=ffffff"
-    )
+    name = re.sub(r"\bFc\b$", "FC", name)
+
+    return name.strip()
 
 
-def get_team_logo(team_name: str):
+def get_team_logo(team_name):
 
     if not team_name:
-        return _logo_fallback("?")
+        return ""
+
+    team_name = normalize_team_name(team_name)
 
     if team_name in LOGO_CACHE:
         return LOGO_CACHE[team_name]
 
-    logo = _logo_fallback(team_name)
+    try:
 
-    LOGO_CACHE[team_name] = logo
+        slug = (
+            team_name
+            .lower()
+            .replace(" ", "-")
+        )
 
-    return logo
+        url = (
+            "https://football-logos.cc/"
+            f"{slug}/"
+        )
 
+        r = requests.get(
+            url,
+            headers=_HEADERS,
+            timeout=8
+        )
+
+        match = re.search(
+            r'https://football-logos.cc/logos/[^"]+\.png',
+            r.text
+        )
+
+        if match:
+
+            logo = match.group(0)
+
+            LOGO_CACHE[team_name] = logo
+
+            print(f"🏷 LOGO: {team_name}")
+
+            return logo
+
+    except:
+        pass
+
+    return (
+        "https://ui-avatars.com/api/"
+        f"?name={team_name[:2]}"
+    )
 
 # =========================================================
-# PARSE MATCH INFO
+# PARSE MATCH
 # =========================================================
-def parse_url_to_info(url: str):
+
+def parse_url_to_info(url):
 
     try:
 
@@ -93,7 +122,11 @@ def parse_url_to_info(url: str):
         )
 
         if not match:
-            return "Unknown", "Unknown", "Chưa có lịch"
+            return (
+                "Unknown",
+                "Unknown",
+                "Unknown"
+            )
 
         slug = match.group(1)
 
@@ -111,42 +144,53 @@ def parse_url_to_info(url: str):
                 f"{t[5:7]}/{t[8:10]}/{t[11:15]}"
             )
 
-            teams_slug = slug[: slug.rfind("-" + t)]
+            teams_slug = slug[
+                :slug.rfind("-" + t)
+            ]
 
         else:
 
-            thoi_gian = "Chưa có lịch"
+            thoi_gian = "Unknown"
 
             teams_slug = slug
 
-        parts = teams_slug.split("-vs-", 1)
+        parts = teams_slug.split(
+            "-vs-",
+            1
+        )
 
         doi_nha = (
             parts[0]
             .replace("-", " ")
             .title()
-            .strip()
         )
 
         doi_khach = (
             parts[1]
             .replace("-", " ")
             .title()
-            .strip()
             if len(parts) > 1
             else "Unknown"
         )
 
-        return doi_nha, doi_khach, thoi_gian
+        return (
+            doi_nha,
+            doi_khach,
+            thoi_gian
+        )
 
     except:
 
-        return "Unknown", "Unknown", "Unknown"
-
+        return (
+            "Unknown",
+            "Unknown",
+            "Unknown"
+        )
 
 # =========================================================
 # VALIDATE M3U8
 # =========================================================
+
 def validate_m3u8(url):
 
     try:
@@ -154,21 +198,19 @@ def validate_m3u8(url):
         r = requests.get(
             url,
             headers=_HEADERS,
-            timeout=8
+            timeout=10
         )
 
-        text = r.text[:500]
-
-        return "#EXTM3U" in text
+        return "#EXTM3U" in r.text
 
     except:
 
         return False
 
-
 # =========================================================
 # CAPTURE STREAM
 # =========================================================
+
 def capture_stream(context, match_url):
 
     page = context.new_page()
@@ -178,9 +220,22 @@ def capture_stream(context, match_url):
     streams = set()
 
     # =====================================================
+    # CONSOLE
+    # =====================================================
+
+    page.on(
+        "console",
+        lambda msg: print(
+            "BROWSER:",
+            msg.text
+        )
+    )
+
+    # =====================================================
     # RESPONSE LISTENER
     # =====================================================
-    def capture_m3u8(res):
+
+    def handle_response(res):
 
         try:
 
@@ -201,89 +256,19 @@ def capture_stream(context, match_url):
 
                 streams.add(url)
 
-                print("\n====================== - main.py:204")
-                print("🎯 REAL M3U8 FOUND - main.py:205")
+                print("\n🎯 REAL M3U8 FOUND")
                 print(url)
-                print("======================\n - main.py:207")
 
-        except Exception as e:
+        except:
+            pass
 
-            print("LISTENER ERROR: - main.py:211", e)
-
-    page.on("response", capture_m3u8)
+    page.on(
+        "response",
+        handle_response
+    )
 
     try:
 
-        # =================================================
-        # ANTI BOT
-        # =================================================
-        page.add_init_script("""
-        Object.defineProperty(navigator, 'webdriver', {
-            get: () => undefined
-        });
-        """)
-
-        # =================================================
-        # HOOK FETCH/XHR
-        # =================================================
-        page.add_init_script("""
-        (() => {
-
-            const origFetch = window.fetch;
-
-            window.fetch = async (...args) => {
-
-                const url = args[0];
-
-                if (typeof url === 'string') {
-
-                    if (
-                        url.includes('.m3u8') ||
-                        url.includes('.flv')
-                    ) {
-
-                        console.log(
-                            'FETCH STREAM:',
-                            url
-                        );
-                    }
-                }
-
-                return origFetch(...args);
-            };
-
-            const origOpen =
-                XMLHttpRequest.prototype.open;
-
-            XMLHttpRequest.prototype.open =
-            function(method, url) {
-
-                if (
-                    url.includes('.m3u8') ||
-                    url.includes('.flv')
-                ) {
-
-                    console.log(
-                        'XHR STREAM:',
-                        url
-                    );
-                }
-
-                return origOpen.apply(
-                    this,
-                    arguments
-                );
-            };
-
-        })();
-        """)
-
-        print(f"\n🌐 OPEN MATCH:")
-        print(match_url)
-
-        # =================================================
-        # OPEN PAGE
-        # =================================================
         page.goto(
             match_url,
             wait_until="domcontentloaded",
@@ -292,34 +277,25 @@ def capture_stream(context, match_url):
 
         page.wait_for_timeout(5000)
 
-        try:
-
-            page.wait_for_load_state(
-                "networkidle",
-                timeout=10000
-            )
-
-        except:
-            pass
-
-        # =================================================
+        # ================================================
         # REMOVE OVERLAY
-        # =================================================
+        # ================================================
+
         try:
 
             page.evaluate("""
             document.querySelectorAll('*')
             .forEach(el => {
 
-                const style =
+                const s =
                     window.getComputedStyle(el);
 
-                const zi =
-                    parseInt(style.zIndex);
+                const z =
+                    parseInt(s.zIndex);
 
                 if (
-                    style.position === 'fixed'
-                    && zi > 999
+                    s.position === 'fixed'
+                    && z > 999
                 ) {
                     el.remove();
                 }
@@ -330,41 +306,31 @@ def capture_stream(context, match_url):
         except:
             pass
 
-        # =================================================
+        # ================================================
         # CLICK CENTER
-        # =================================================
+        # ================================================
+
         try:
 
             vp = page.viewport_size
 
-            if vp:
+            cx = vp["width"] // 2
+            cy = vp["height"] // 2
 
-                cx = vp["width"] // 2
-                cy = vp["height"] // 2
+            page.mouse.click(cx, cy)
 
-                page.mouse.click(cx, cy)
+            page.wait_for_timeout(1500)
 
-                page.wait_for_timeout(1500)
-
-                page.mouse.click(cx, cy)
+            page.mouse.click(cx, cy)
 
         except:
             pass
 
-        # =================================================
-        # IFRAME
-        # =================================================
+        # ================================================
+        # PLAY VIDEO
+        # ================================================
+
         for frame in page.frames:
-
-            try:
-                frame.click("video", timeout=3000)
-            except:
-                pass
-
-            try:
-                frame.click("button", timeout=2000)
-            except:
-                pass
 
             try:
 
@@ -387,31 +353,22 @@ def capture_stream(context, match_url):
             except:
                 pass
 
-        # =================================================
+        # ================================================
         # WAIT STREAM
-        # =================================================
-        try:
+        # ================================================
 
-            page.wait_for_response(
-                lambda r:
-                    ".m3u8" in r.url.lower()
-                    or "mpegurl" in (
-                        r.headers.get(
-                            "content-type",
-                            ""
-                        ).lower()
-                    ),
-                timeout=20000
-            )
+        deadline = time.time() + 20
 
-        except:
-            pass
+        while time.time() < deadline:
 
-        page.wait_for_timeout(5000)
+            if streams:
+                break
+
+            time.sleep(1)
 
     except PWTimeout:
 
-        print("⚠️ PAGE TIMEOUT")
+        print("⚠️ TIMEOUT")
 
     except Exception as e:
 
@@ -422,17 +379,18 @@ def capture_stream(context, match_url):
         page.close()
 
     # =====================================================
-    # CHOOSE BEST STREAM
+    # BEST STREAM
     # =====================================================
+
     if streams:
 
         priority = []
 
         for s in streams:
 
-            lower = s.lower()
-
             score = 0
+
+            lower = s.lower()
 
             if "index.m3u8" in lower:
                 score += 100
@@ -443,81 +401,54 @@ def capture_stream(context, match_url):
             if ".m3u8" in lower:
                 score += 50
 
-            if "live" in lower:
-                score += 20
-
             priority.append((score, s))
 
         priority.sort(reverse=True)
 
         best = priority[0][1]
 
-        print("\n✅ FINAL STREAM:")
+        print("\n✅ FINAL STREAM")
         print(best)
 
         if validate_m3u8(best):
 
-            print("✅ VALID M3U8")
+            print("✅ VALID")
 
             return best
 
-        else:
-
-            print("❌ INVALID M3U8")
-
     return None
-
 
 # =========================================================
 # JSON
 # =========================================================
-def create_json(matches_data):
 
-    export = {
+def create_json(matches):
 
-        "playlist_name": "Sáng TV",
+    data = {
 
-        "last_updated":
+        "playlist_name": "Sang TV",
+
+        "updated": (
             datetime.datetime.now(VN_TZ)
-            .strftime("%H:%M %d/%m/%Y"),
+            .strftime("%H:%M %d/%m/%Y")
+        ),
 
-        "total_live":
-            sum(
-                1
-                for m in matches_data
-                if m.get("is_live")
-            ),
-
-        "total_streams":
-            sum(
-                1
-                for m in matches_data
-                if (
-                    m.get("stream_url")
-                    and
-                    m.get("stream_url")
-                    != WAITING_VIDEO_URL
-                )
-            ),
-
-        "matches": matches_data,
+        "matches": matches
     }
 
     return json.dumps(
-        export,
+        data,
         indent=2,
         ensure_ascii=False
     )
 
-
 # =========================================================
 # PUSH GITHUB
 # =========================================================
-def push_to_github(content, live, streams):
+
+def push_to_github(content):
 
     if not GITHUB_TOKEN:
-
-        print("⚠️ NO GH_TOKEN")
 
         with open(
             FILE_PATH,
@@ -550,7 +481,7 @@ def push_to_github(content, live, streams):
             existing.sha
         )
 
-        print("✅ UPDATED GITHUB")
+        print("✅ Updated GitHub")
 
     except:
 
@@ -560,28 +491,21 @@ def push_to_github(content, live, streams):
             content
         )
 
-        print("✅ CREATED FILE")
-
+        print("✅ Created GitHub file")
 
 # =========================================================
 # MAIN
 # =========================================================
+
 def scrape_and_push():
 
-    matches_data = []
-
-    print("=" * 70)
-
-    print(
-        datetime.datetime.now(VN_TZ)
-        .strftime("START %H:%M:%S %d/%m/%Y")
-    )
-
-    print("=" * 70)
+    matches = []
 
     with sync_playwright() as p:
 
         browser = p.chromium.launch(
+
+            channel="chrome",
 
             headless=True,
 
@@ -590,11 +514,13 @@ def scrape_and_push():
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
                 "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--disable-web-security",
                 "--autoplay-policy=no-user-gesture-required",
             ]
         )
 
-        ctx = browser.new_context(
+        context = browser.new_context(
 
             viewport={
                 "width": 1920,
@@ -603,18 +529,14 @@ def scrape_and_push():
 
             user_agent=_HEADERS["User-Agent"],
 
-            java_script_enabled=True,
-
-            bypass_csp=True,
-
-            ignore_https_errors=True,
+            ignore_https_errors=True
         )
 
-        page = ctx.new_page()
+        page = context.new_page()
 
         Stealth().apply_stealth_sync(page)
 
-        print("\n📋 LOAD MATCH LIST")
+        print("📋 LOAD MATCHES")
 
         page.goto(
             TARGET_SITE,
@@ -624,186 +546,109 @@ def scrape_and_push():
 
         page.wait_for_timeout(5000)
 
-        # =================================================
-        # SCROLL
-        # =================================================
         for _ in range(5):
 
             page.mouse.wheel(0, 3000)
 
             page.wait_for_timeout(1000)
 
+        links = []
+
         seen = set()
 
-        valid = []
-
-        for link in page.locator(
+        for el in page.locator(
             "a[href*='/truc-tiep/']"
         ).all():
 
-            href = link.get_attribute("href") or ""
+            href = el.get_attribute("href")
 
-            if "-vs-" in href:
+            if not href:
+                continue
 
-                if href not in seen:
+            if "-vs-" not in href:
+                continue
 
-                    seen.add(href)
+            if href in seen:
+                continue
 
-                    valid.append(link)
+            seen.add(href)
+
+            if not href.startswith("http"):
+
+                href = (
+                    "https://bunchatv4.net"
+                    + href
+                )
+
+            links.append(href)
 
         if LIMIT_MATCHES:
-            valid = valid[:LIMIT_MATCHES]
 
-        print(f"✅ FOUND {len(valid)} MATCHES")
+            links = links[:LIMIT_MATCHES]
 
-        # =================================================
-        # BUILD MATCHES
-        # =================================================
-        for i, el in enumerate(valid):
-
-            try:
-
-                href = el.get_attribute("href") or ""
-
-                if (
-                    href
-                    and
-                    not href.startswith("http")
-                ):
-
-                    href = (
-                        "/".join(
-                            TARGET_SITE.split("/")[:3]
-                        )
-                        + href
-                    )
-
-                doi_nha, doi_khach, thoi_gian = (
-                    parse_url_to_info(href)
-                )
-
-                is_live = True
-
-                matches_data.append({
-
-                    "id": str(i + 1),
-
-                    "title":
-                        f"{doi_nha} vs {doi_khach}",
-
-                    "doi_nha": doi_nha,
-
-                    "doi_khach": doi_khach,
-
-                    "thoi_gian": thoi_gian,
-
-                    "is_live": is_live,
-
-                    "logo_nha":
-                        get_team_logo(doi_nha),
-
-                    "logo_khach":
-                        get_team_logo(doi_khach),
-
-                    "stream_url":
-                        WAITING_VIDEO_URL,
-
-                    "link_xem": href,
-                })
-
-                print(
-                    f"[{i+1}] "
-                    f"{doi_nha} vs {doi_khach}"
-                )
-
-            except Exception as e:
-
-                print("❌ MATCH ERROR:", e)
-
-        page.close()
+        print(f"✅ FOUND {len(links)}")
 
         # =================================================
-        # CAPTURE STREAMS
+        # PROCESS MATCHES
         # =================================================
-        live_matches = [
-            m
-            for m in matches_data
-            if m["is_live"]
-        ]
 
-        print(
-            f"\n🎥 CAPTURE "
-            f"{len(live_matches)} STREAMS"
-        )
+        for idx, href in enumerate(links):
 
-        for idx, match in enumerate(live_matches):
+            doi_nha, doi_khach, thoi_gian = (
+                parse_url_to_info(href)
+            )
 
             print(
-                f"\n[{idx+1}/{len(live_matches)}]"
+                f"\n[{idx+1}] "
+                f"{doi_nha} vs {doi_khach}"
             )
-
-            print(match["title"])
 
             stream = capture_stream(
-                ctx,
-                match["link_xem"]
+                context,
+                href
             )
 
-            if stream:
+            match = {
 
-                match["stream_url"] = stream
+                "id": str(idx + 1),
 
-                print("✅ STREAM SAVED")
+                "title":
+                    f"{doi_nha} vs {doi_khach}",
 
-            else:
+                "doi_nha": doi_nha,
 
-                print("❌ NO STREAM")
+                "doi_khach": doi_khach,
+
+                "thoi_gian": thoi_gian,
+
+                "logo_nha":
+                    get_team_logo(doi_nha),
+
+                "logo_khach":
+                    get_team_logo(doi_khach),
+
+                "stream_url":
+                    stream
+                    if stream
+                    else WAITING_VIDEO_URL,
+
+                "link_xem": href
+            }
+
+            matches.append(match)
 
         browser.close()
 
-    # =====================================================
-    # SAVE
-    # =====================================================
-    if not matches_data:
+    content = create_json(matches)
 
-        print("❌ NO DATA")
+    push_to_github(content)
 
-        return
-
-    live_cnt = sum(
-        1
-        for m in matches_data
-        if m["is_live"]
-    )
-
-    stream_cnt = sum(
-        1
-        for m in matches_data
-        if m["stream_url"] != WAITING_VIDEO_URL
-    )
-
-    content = create_json(matches_data)
-
-    push_to_github(
-        content,
-        live_cnt,
-        stream_cnt
-    )
-
-    print("\n" + "=" * 70)
-
-    print(
-        f"✅ DONE | "
-        f"{len(matches_data)} matches | "
-        f"{stream_cnt} streams"
-    )
-
-    print("=" * 70)
-
+    print("\n✅ DONE")
 
 # =========================================================
 # RUN
 # =========================================================
+
 if __name__ == "__main__":
 
     scrape_and_push()
