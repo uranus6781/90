@@ -40,7 +40,9 @@ _HEADERS = {
         "AppleWebKit/537.36 "
         "(KHTML, like Gecko) "
         "Chrome/124.0.0.0 Safari/537.36"
-    )
+    ),
+    "Referer": "https://bunchatv4.net/",
+    "Origin": "https://bunchatv4.net"
 }
 
 LOGO_CACHE = {}
@@ -82,7 +84,7 @@ def get_team_logo(team_name):
         r = requests.get(
             url,
             headers=_HEADERS,
-            timeout=8
+            timeout=10
         )
 
         match = re.search(
@@ -201,11 +203,47 @@ def validate_m3u8(url):
             timeout=10
         )
 
-        return "#EXTM3U" in r.text
+        return (
+            r.status_code == 200
+            and "#EXTM3U" in r.text
+        )
 
     except:
 
         return False
+
+# =========================================================
+# STREAM SCORE
+# =========================================================
+
+def stream_score(url):
+
+    lower = url.lower()
+
+    score = 0
+
+    if "taoxanh" in lower:
+        score += 1000
+
+    if "cdn-hls" in lower:
+        score += 900
+
+    if "index.m3u8" in lower:
+        score += 700
+
+    if "master.m3u8" in lower:
+        score += 600
+
+    if "playlist.m3u8" in lower:
+        score += 300
+
+    if "rapidlive" in lower:
+        score += 200
+
+    if ".m3u8" in lower:
+        score += 100
+
+    return score
 
 # =========================================================
 # CAPTURE STREAM
@@ -232,7 +270,7 @@ def capture_stream(context, match_url):
     )
 
     # =====================================================
-    # RESPONSE LISTENER
+    # RESPONSE HANDLER
     # =====================================================
 
     def handle_response(res):
@@ -246,26 +284,85 @@ def capture_stream(context, match_url):
                 ""
             ).lower()
 
+            # =================================================
+            # DIRECT M3U8
+            # =================================================
+
             if (
                 ".m3u8" in url.lower()
                 or "mpegurl" in ct
             ):
 
-                if "ads" in url.lower():
-                    return
+                if "ads" not in url.lower():
+
+                    streams.add(url)
+
+                    print("\n🎯 DIRECT M3U8")
+                    print(url)
+
+            # =================================================
+            # PARSE BODY
+            # =================================================
+
+            try:
+
+                body = res.text()
+
+                found = re.findall(
+                    r'https?:\/\/[^\s"\']+\.m3u8[^\s"\']*',
+                    body
+                )
+
+                for m3u8 in found:
+
+                    if "ads" in m3u8.lower():
+                        continue
+
+                    streams.add(m3u8)
+
+                    print("\n🔥 BODY M3U8")
+                    print(m3u8)
+
+            except:
+                pass
+
+        except Exception as e:
+
+            print("LISTENER ERROR:", e)
+
+    page.on(
+        "response",
+        handle_response
+    )
+
+    # =====================================================
+    # REQUEST HANDLER
+    # =====================================================
+
+    def handle_request(req):
+
+        try:
+
+            url = req.url
+
+            if ".m3u8" in url.lower():
 
                 streams.add(url)
 
-                print("\n🎯 REAL M3U8 FOUND")
+                print("\n⚡ REQUEST M3U8")
                 print(url)
 
         except:
             pass
 
     page.on(
-        "response",
-        handle_response
+        "request",
+        handle_request
     )
+
+    # =====================================================
+    # LOAD PAGE
+    # =====================================================
 
     try:
 
@@ -277,9 +374,9 @@ def capture_stream(context, match_url):
 
         page.wait_for_timeout(5000)
 
-        # ================================================
+        # =================================================
         # REMOVE OVERLAY
-        # ================================================
+        # =================================================
 
         try:
 
@@ -306,9 +403,9 @@ def capture_stream(context, match_url):
         except:
             pass
 
-        # ================================================
+        # =================================================
         # CLICK CENTER
-        # ================================================
+        # =================================================
 
         try:
 
@@ -323,12 +420,16 @@ def capture_stream(context, match_url):
 
             page.mouse.click(cx, cy)
 
+            page.wait_for_timeout(1500)
+
+            page.mouse.click(cx, cy)
+
         except:
             pass
 
-        # ================================================
+        # =================================================
         # PLAY VIDEO
-        # ================================================
+        # =================================================
 
         for frame in page.frames:
 
@@ -353,16 +454,18 @@ def capture_stream(context, match_url):
             except:
                 pass
 
-        # ================================================
+        # =================================================
         # WAIT STREAM
-        # ================================================
+        # =================================================
 
-        deadline = time.time() + 20
+        deadline = time.time() + 25
 
         while time.time() < deadline:
 
             if streams:
-                break
+                print(
+                    f"\n📡 TOTAL STREAMS: {len(streams)}"
+                )
 
             time.sleep(1)
 
@@ -379,42 +482,53 @@ def capture_stream(context, match_url):
         page.close()
 
     # =====================================================
-    # BEST STREAM
+    # SELECT BEST STREAM
     # =====================================================
 
     if streams:
 
-        priority = []
+        valid_streams = []
 
         for s in streams:
 
-            score = 0
+            score = stream_score(s)
 
-            lower = s.lower()
+            valid_streams.append(
+                (score, s)
+            )
 
-            if "index.m3u8" in lower:
-                score += 100
+        valid_streams.sort(
+            reverse=True
+        )
 
-            if "master.m3u8" in lower:
-                score += 90
+        print("\n====================")
+        print("📋 STREAM RANKING")
+        print("====================")
 
-            if ".m3u8" in lower:
-                score += 50
+        for score, url in valid_streams[:10]:
 
-            priority.append((score, s))
+            print(
+                f"[{score}] {url}"
+            )
 
-        priority.sort(reverse=True)
+        # =============================================
+        # VALIDATE BEST
+        # =============================================
 
-        best = priority[0][1]
+        for score, url in valid_streams:
 
-        print("\n✅ FINAL STREAM")
-        print(best)
+            print("\n🔍 TEST:")
+            print(url)
 
-        if validate_m3u8(best):
+            if validate_m3u8(url):
 
-            print("✅ VALID")
+                print("✅ VALID STREAM")
 
-            return best
+                return url
+
+            else:
+
+                print("❌ DEAD STREAM")
 
     return None
 
@@ -432,6 +546,8 @@ def create_json(matches):
             datetime.datetime.now(VN_TZ)
             .strftime("%H:%M %d/%m/%Y")
         ),
+
+        "total_matches": len(matches),
 
         "matches": matches
     }
@@ -510,12 +626,19 @@ def scrape_and_push():
             headless=True,
 
             args=[
+
                 "--disable-blink-features=AutomationControlled",
+
                 "--no-sandbox",
+
                 "--disable-setuid-sandbox",
+
                 "--disable-dev-shm-usage",
+
                 "--disable-gpu",
+
                 "--disable-web-security",
+
                 "--autoplay-policy=no-user-gesture-required",
             ]
         )
@@ -586,7 +709,7 @@ def scrape_and_push():
 
             links = links[:LIMIT_MATCHES]
 
-        print(f"✅ FOUND {len(links)}")
+        print(f"✅ FOUND {len(links)} MATCHES")
 
         # =================================================
         # PROCESS MATCHES
@@ -599,7 +722,10 @@ def scrape_and_push():
             )
 
             print(
-                f"\n[{idx+1}] "
+                f"\n[{idx+1}/{len(links)}]"
+            )
+
+            print(
                 f"{doi_nha} vs {doi_khach}"
             )
 
