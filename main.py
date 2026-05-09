@@ -253,6 +253,17 @@ def create_json(all_channel_data):
     data.update(all_channel_data)
     return json.dumps(data, indent=2, ensure_ascii=False)
 
+def json_to_m3u(json_content):
+    data = json.loads(json_content)
+    lines = ["#EXTM3U", f"#PLAYLISTNAME: Sáng TV - {data.get('last_updated')}", ""]
+    for c_id in ["buncha", "hoiquan"]:
+        for m in data.get(c_id, []):
+            url = m.get("stream_url")
+            if url:
+                lines.append(f'#EXTINF:-1 tvg-logo="{m["logo_nha"]}" group-title="{c_id.upper()}", {m["title"]}')
+                lines.append(url)
+    return "\n".join(lines)
+
 # =========================================================
 # PUSH GITHUB
 # =========================================================
