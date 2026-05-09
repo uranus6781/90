@@ -21,7 +21,7 @@ FILE_PATH = "bongda.json"
 
 WAITING_VIDEO_URL = "https://example.com/video-cho.mp4"
 
-LIMIT_MATCHES = 30
+LIMIT_MATCHES = 10
 
 VN_TZ = datetime.timezone(datetime.timedelta(hours=7))
 
