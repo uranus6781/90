@@ -1,317 +1,637 @@
 import os
-import datetime
 import re
 import time
-import requests
 import json
-from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+import datetime
+import requests
+
 from github import Github
+from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+from playwright_stealth import stealth_sync
 
 # ==========================================
-# CẤU HÌNH
+# CONFIG
 # ==========================================
 TARGET_SITE = "https://bunchatv4.net/truc-tiep-bong-da-xoilac-tv"
+
 GITHUB_TOKEN = os.getenv("GH_TOKEN")
 REPO_NAME = os.getenv("GH_REPO", "Eternal161/dausoco")
-FILE_PATH = "bongda.json"
-WAITING_VIDEO_URL = "https://example.com/video-cho.mp4"
-LIMIT_MATCHES = 15
 
-# Ép cứng múi giờ Việt Nam (UTC+7)
+FILE_PATH = "bongda.json"
+
+WAITING_VIDEO_URL = "https://example.com/video-cho.mp4"
+
+LIMIT_MATCHES = 30
+
 VN_TZ = datetime.timezone(datetime.timedelta(hours=7))
 
-LOGO_CACHE = {}
-# Nâng cấp Header giống người thật 100% để lách qua các API cấm Bot
 _HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/plain, */*",
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
     "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
 }
 
+LOGO_CACHE = {}
+
 # ==========================================
-# CHUẨN HÓA TÊN ĐỘI
+# TEAM NAME
 # ==========================================
 def normalize_team_name(raw: str) -> str:
-    cleaned = re.sub(r'\bFc\b$', 'FC', raw)
-    cleaned = re.sub(r'\bFootball Club\b', 'FC', cleaned)
+    cleaned = re.sub(r"\bFc\b$", "FC", raw)
+    cleaned = re.sub(r"\bFootball Club\b", "FC", cleaned)
     return cleaned.strip()
 
+
 # ==========================================
-# LẤY LOGO: BỘ 3 QUÉT ẢNH TỐI THƯỢNG
+# LOGO
 # ==========================================
-def _logo_football_logos_cc(team_name: str) -> str | None:
-    try:
-        search_term = team_name.lower().replace(" ", "-")
-        r = requests.get(f"https://football-logos.cc/search?q={search_term}", headers=_HEADERS, timeout=4)
-        match = re.search(r'src="(https://football-logos.cc/logos/[^"]+\.png)"', r.text)
-        if match: return match.group(1)
-    except: pass
-    return None
-
-def _logo_espn(team_name: str) -> str | None:
-    try:
-        r = requests.get("https://site.api.espn.com/apis/site/v2/sports/soccer/all/teams", params={"search": team_name}, headers=_HEADERS, timeout=4)
-        logos = r.json().get("sports", [])[0].get("leagues", [])[0].get("teams", [])[0].get("team", {}).get("logos", [])
-        if logos: return logos[0].get("href")
-    except: pass
-    return None
-
-def _logo_fotmob(team_name: str) -> str | None:
-    # Nâng cấp: Phân tích trực tiếp JSON của FotMob thay vì dò Regex
-    try:
-        r = requests.get("https://apigw.fotmob.com/searchapi/suggest", params={"term": team_name, "lang": "vi"}, headers=_HEADERS, timeout=4)
-        data = r.json()
-        teams = data.get("suggest", {}).get("team", [])
-        if teams and teams[0].get("id"):
-            return f"https://images.fotmob.com/image_resources/logo/teamlogo/{teams[0]['id']}.png"
-    except: pass
-    return None
-
-def _logo_fallback(team_name: str) -> str:
+def _logo_fallback(team_name: str):
     initials = "".join(w[0].upper() for w in team_name.split()[:3] if w)
-    return f"https://ui-avatars.com/api/?name={requests.utils.quote(initials)}&size=200&background=1565C0&color=ffffff&bold=true&format=png"
 
-def get_team_logo(team_name: str) -> str:
-    if not team_name or team_name == "Unknown": return _logo_fallback("?")
-    search_name = normalize_team_name(team_name)
-    if search_name in LOGO_CACHE: return LOGO_CACHE[search_name]
+    return (
+        "https://ui-avatars.com/api/?name="
+        f"{requests.utils.quote(initials)}"
+        "&size=200&background=1565C0&color=ffffff"
+    )
 
-    logo = _logo_football_logos_cc(search_name) or _logo_espn(search_name) or _logo_fotmob(search_name) or _logo_fallback(team_name)
-    LOGO_CACHE[search_name] = logo
+
+def get_team_logo(team_name: str):
+    if not team_name:
+        return _logo_fallback("?")
+
+    if team_name in LOGO_CACHE:
+        return LOGO_CACHE[team_name]
+
+    logo = _logo_fallback(team_name)
+
     LOGO_CACHE[team_name] = logo
-    print(f"      🏷  [{team_name}] → {logo[:55]}...")
+
     return logo
 
+
 # ==========================================
-# PARSE THÔNG TIN TRẬN
+# PARSE URL
 # ==========================================
-def parse_url_to_info(url: str) -> tuple[str, str, str]:
+def parse_url_to_info(url: str):
+
     try:
-        match = re.search(r'/truc-tiep/([^/?#]+)', url)
-        if not match: return "Unknown", "Unknown", "Chưa có lịch"
+        match = re.search(r"/truc-tiep/([^/?#]+)", url)
+
+        if not match:
+            return "Unknown", "Unknown", "Chưa có lịch"
+
         slug = match.group(1)
-        time_match = re.search(r'(\d{4}-\d{2}-\d{2}-\d{4})$', slug)
+
+        time_match = re.search(r"(\d{4}-\d{2}-\d{4})$", slug)
+
         if time_match:
             t = time_match.group(1)
+
             thoi_gian = f"{t[0:2]}:{t[2:4]} {t[5:7]}/{t[8:10]}/{t[11:15]}"
-            teams_slug = slug[: slug.rfind('-' + t)]
+
+            teams_slug = slug[: slug.rfind("-" + t)]
+
         else:
-            thoi_gian, teams_slug = "Chưa có lịch", slug
-        parts = teams_slug.split('-vs-', 1)
-        return parts[0].replace('-', ' ').title().strip(), parts[1].replace('-', ' ').title().strip() if len(parts) > 1 else "Unknown", thoi_gian
-    except Exception:
+            thoi_gian = "Chưa có lịch"
+            teams_slug = slug
+
+        parts = teams_slug.split("-vs-", 1)
+
+        doi_nha = parts[0].replace("-", " ").title().strip()
+
+        doi_khach = (
+            parts[1].replace("-", " ").title().strip()
+            if len(parts) > 1
+            else "Unknown"
+        )
+
+        return doi_nha, doi_khach, thoi_gian
+
+    except:
         return "Unknown", "Unknown", "Unknown"
 
-# ==========================================
-# BẮT LUỒNG M3U8 (CHIẾN THUẬT PHÁ GIÁP QUẢNG CÁO)
-# ==========================================
-def capture_stream(context, match_url: str) -> str | None:
-    page = context.new_page()
-    streams = []
 
-    def on_request(req):
-        url = req.url.lower()
-        if ".mp4" in url: return
-        if ".m3u8" in url or ".flv" in url:
-            # Loại bỏ các file m3u8 rác của quảng cáo
-            if "ad" in url and "live" not in url and "index" not in url: return
-            if req.url not in streams:
-                streams.append(req.url)
+# ==========================================
+# CAPTURE STREAM
+# ==========================================
+def capture_stream(context, match_url):
+
+    page = context.new_page()
+
+    stealth_sync(page)
+
+    streams = set()
+
+    def handle_url(url):
+
+        u = url.lower()
+
+        if ".mp4" in u:
+            return
+
+        if ".m3u8" in u or ".flv" in u:
+
+            if "ads" in u:
+                return
+
+            streams.add(url)
+
+            print(f"🎯 FOUND STREAM:")
+            print(url)
+
+    # ======================
+    # LISTEN NETWORK
+    # ======================
+    page.on("request", lambda r: handle_url(r.url))
+    page.on("response", lambda r: handle_url(r.url))
 
     try:
-        page.on("request", on_request)
-        
-        # Đợi "load" để đảm bảo các iframe trình phát được tải xong hoàn toàn
-        page.goto(match_url, wait_until="load", timeout=45000)
-        page.wait_for_timeout(3000)
 
-        # 1. Bơm JS: Ép xóa sạch các lớp phủ (overlay, pop-up) đang chặn click
+        # Anti bot
+        page.add_init_script("""
+        Object.defineProperty(navigator, 'webdriver', {
+            get: () => undefined
+        });
+        """)
+
+        # Hook fetch + xhr
+        page.add_init_script("""
+        (() => {
+
+            const origFetch = window.fetch;
+
+            window.fetch = async (...args) => {
+
+                const url = args[0];
+
+                if (typeof url === 'string') {
+
+                    if (
+                        url.includes('.m3u8') ||
+                        url.includes('.flv')
+                    ) {
+                        console.log('FETCH STREAM:', url);
+                    }
+                }
+
+                return origFetch(...args);
+            };
+
+            const origOpen = XMLHttpRequest.prototype.open;
+
+            XMLHttpRequest.prototype.open = function(method, url) {
+
+                if (
+                    url.includes('.m3u8') ||
+                    url.includes('.flv')
+                ) {
+                    console.log('XHR STREAM:', url);
+                }
+
+                return origOpen.apply(this, arguments);
+            };
+
+        })();
+        """)
+
+        print(f"\n🌐 OPEN: {match_url}")
+
+        page.goto(
+            match_url,
+            wait_until="domcontentloaded",
+            timeout=60000
+        )
+
+        page.wait_for_timeout(5000)
+
+        try:
+            page.wait_for_load_state(
+                "networkidle",
+                timeout=10000
+            )
+        except:
+            pass
+
+        # Remove overlays
         try:
             page.evaluate("""
-                document.querySelectorAll('div[style*="z-index"]').forEach(e => {
-                    if (window.getComputedStyle(e).zIndex > 100) e.remove();
-                });
+            document.querySelectorAll('*').forEach(el => {
+
+                const style = window.getComputedStyle(el);
+
+                const zi = parseInt(style.zIndex);
+
+                if (
+                    style.position === 'fixed' &&
+                    zi > 999
+                ) {
+                    el.remove();
+                }
+
+            });
             """)
-        except: pass
+        except:
+            pass
 
-        # 2. Bạo lực Click: Bấm giữa màn hình để KÍCH HOẠT luồng ẩn
+        # Click center screen
         try:
+
             vp = page.viewport_size
+
             if vp:
-                cx, cy = vp["width"] / 2, vp["height"] / 2
-                page.mouse.click(cx, cy)        # Click lần 1: Đánh lừa bung Pop-up
-                page.wait_for_timeout(1500)     # Chờ 1.5 giây
-                page.mouse.click(cx, cy - 20)   # Click lần 2: Đập thẳng vào nút Play
-        except: pass
-        
-        # 3. Lục lọi tất cả iframe để ép Play bằng JS (Chống cháy)
-        try:
-            for frame in page.frames:
+
+                cx = vp["width"] // 2
+                cy = vp["height"] // 2
+
+                page.mouse.click(cx, cy)
+
+                page.wait_for_timeout(1500)
+
+                page.mouse.click(cx, cy)
+
+        except:
+            pass
+
+        # iframe actions
+        for frame in page.frames:
+
+            try:
+                frame.click("video", timeout=3000)
+            except:
+                pass
+
+            try:
+                frame.click("button", timeout=2000)
+            except:
+                pass
+
+            try:
                 frame.evaluate("""
-                    document.querySelectorAll('video').forEach(v => {
-                        v.muted = true; v.play().catch(()=>{});
-                    });
+                document.querySelectorAll('video')
+                .forEach(v => {
+
+                    v.muted = true;
+
+                    const p = v.play();
+
+                    if (p !== undefined) {
+                        p.catch(()=>{});
+                    }
+
+                });
                 """)
-        except: pass
+            except:
+                pass
 
-        # Chờ tối đa 15s để bắt luồng m3u8 trồi lên
-        deadline = time.time() + 15
-        while time.time() < deadline:
-            time.sleep(1)
-            if streams:
-                print(f"         ✅ ĐÃ TÓM ĐƯỢC M3U8 sau {(15 - (deadline - time.time())):.0f}s")
-                break
+        # Wait for m3u8
+        try:
 
-    except PWTimeout: 
-        print("         ⚠️  Trang tải quá lâu (Timeout)")
-    except Exception as e: 
-        print(f"         ❌ Lỗi bắt luồng: {e}")
+            page.wait_for_response(
+                lambda r:
+                    ".m3u8" in r.url.lower()
+                    or ".flv" in r.url.lower(),
+                timeout=15000
+            )
+
+        except:
+            pass
+
+        page.wait_for_timeout(5000)
+
+    except PWTimeout:
+
+        print("⚠️ TIMEOUT")
+
+    except Exception as e:
+
+        print("❌ STREAM ERROR:", e)
+
     finally:
+
         page.close()
-    
+
     if streams:
-        live_streams = [s for s in streams if "live" in s.lower()]
-        return (live_streams or streams)[-1] # Luôn lấy luồng m3u8 chất lượng cao nhất ở cuối
+
+        streams = sorted(streams)
+
+        live_streams = [
+            s for s in streams
+            if "live" in s.lower()
+        ]
+
+        best = live_streams[-1] if live_streams else streams[-1]
+
+        print(f"\n✅ FINAL STREAM:")
+        print(best)
+
+        return best
+
     return None
 
+
 # ==========================================
-# TẠO JSON & PUSH LÊN GITHUB
+# JSON
 # ==========================================
-def create_json(matches_data: list) -> str:
+def create_json(matches_data):
+
     export = {
         "playlist_name": "Sáng TV",
-        "last_updated": datetime.datetime.now(VN_TZ).strftime("%H:%M %d/%m/%Y"),
-        "total_live": sum(1 for m in matches_data if m.get("is_live")),
-        "total_streams": sum(1 for m in matches_data if m.get("stream_url") and m.get("stream_url") != WAITING_VIDEO_URL),
+
+        "last_updated": datetime.datetime.now(
+            VN_TZ
+        ).strftime("%H:%M %d/%m/%Y"),
+
+        "total_live": sum(
+            1 for m in matches_data
+            if m.get("is_live")
+        ),
+
+        "total_streams": sum(
+            1 for m in matches_data
+            if m.get("stream_url")
+            and m.get("stream_url") != WAITING_VIDEO_URL
+        ),
+
         "matches": matches_data,
     }
-    return json.dumps(export, indent=2, ensure_ascii=False)
 
-def push_to_github(content: str, live: int, streams: int) -> None:
-    if not GITHUB_TOKEN:
-        print("⚠️  Không có GH_TOKEN, lưu local.")
-        with open(FILE_PATH, "w", encoding="utf-8") as f: f.write(content)
-        return
-    g = Github(GITHUB_TOKEN)
-    repo = g.get_repo(REPO_NAME)
-    msg = f"⚽ Cập nhật: {datetime.datetime.now(VN_TZ).strftime('%H:%M %d/%m/%Y')} — {live} live, {streams} streams"
-    try:
-        existing = repo.get_contents(FILE_PATH)
-        repo.update_file(existing.path, msg, content, existing.sha)
-        print(f"✅ Đã cập nhật GitHub: {FILE_PATH}")
-    except:
-        repo.create_file(FILE_PATH, msg, content)
-        print(f"✅ Đã tạo mới trên GitHub: {FILE_PATH}")
+    return json.dumps(
+        export,
+        indent=2,
+        ensure_ascii=False
+    )
+
 
 # ==========================================
-# HÀM CHÍNH
+# GITHUB
+# ==========================================
+def push_to_github(content, live, streams):
+
+    if not GITHUB_TOKEN:
+
+        print("⚠️ NO GH_TOKEN")
+
+        with open(FILE_PATH, "w", encoding="utf-8") as f:
+            f.write(content)
+
+        return
+
+    g = Github(GITHUB_TOKEN)
+
+    repo = g.get_repo(REPO_NAME)
+
+    msg = (
+        f"⚽ Update "
+        f"{datetime.datetime.now(VN_TZ).strftime('%H:%M %d/%m/%Y')}"
+    )
+
+    try:
+
+        existing = repo.get_contents(FILE_PATH)
+
+        repo.update_file(
+            existing.path,
+            msg,
+            content,
+            existing.sha
+        )
+
+        print("✅ UPDATED GITHUB")
+
+    except:
+
+        repo.create_file(
+            FILE_PATH,
+            msg,
+            content
+        )
+
+        print("✅ CREATED FILE")
+
+
+# ==========================================
+# MAIN
 # ==========================================
 def scrape_and_push():
+
     matches_data = []
-    print("=" * 65)
-    print(f"⏰ BẮT ĐẦU: {datetime.datetime.now(VN_TZ).strftime('%H:%M:%S %d/%m/%Y')}")
-    print("=" * 65)
+
+    print("=" * 70)
+
+    print(
+        datetime.datetime.now(VN_TZ)
+        .strftime("START %H:%M:%S %d/%m/%Y")
+    )
+
+    print("=" * 70)
 
     with sync_playwright() as p:
-        # NÂNG CẤP CHỐNG CHẶN BOT TẠI ĐÂY
-        browser = p.chromium.launch(headless=True, args=[
-            "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu",
-            "--autoplay-policy=no-user-gesture-required", "--disable-web-security",
-            "--disable-blink-features=AutomationControlled" # <-- Vũ khí lừa trang web
-        ])
-        ctx = browser.new_context(
-            viewport={"width": 1920, "height": 1080}, 
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+
+        browser = p.chromium.launch(
+            headless=False,
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--autoplay-policy=no-user-gesture-required",
+            ]
         )
-        main_page = ctx.new_page()
 
-        print("\n📋 BƯỚC 1: Lấy danh sách trận...")
-        try:
-            main_page.goto(TARGET_SITE, timeout=60000)
-            main_page.wait_for_load_state("networkidle", timeout=15000)
-        except Exception as e: print(f"  ⚠️  Load chậm: {e}")
+        ctx = browser.new_context(
+            viewport={
+                "width": 1920,
+                "height": 1080
+            },
 
-        for _ in range(3):
-            main_page.evaluate("window.scrollBy(0, 900)")
-            main_page.wait_for_timeout(800)
+            user_agent=_HEADERS["User-Agent"],
 
-        seen_hrefs, valid = set(), []
-        for link in main_page.locator("a[href*='/truc-tiep/']").all():
+            java_script_enabled=True,
+
+            bypass_csp=True,
+
+            ignore_https_errors=True,
+        )
+
+        page = ctx.new_page()
+
+        stealth_sync(page)
+
+        print("\n📋 LOAD MATCH LIST")
+
+        page.goto(
+            TARGET_SITE,
+            wait_until="domcontentloaded",
+            timeout=60000
+        )
+
+        page.wait_for_timeout(5000)
+
+        # scroll
+        for _ in range(5):
+
+            page.mouse.wheel(0, 3000)
+
+            page.wait_for_timeout(1000)
+
+        seen = set()
+
+        valid = []
+
+        for link in page.locator(
+            "a[href*='/truc-tiep/']"
+        ).all():
+
             href = link.get_attribute("href") or ""
-            if "-vs-" in href and href not in seen_hrefs:
-                seen_hrefs.add(href)
-                valid.append(link)
-        if LIMIT_MATCHES: valid = valid[:LIMIT_MATCHES]
-        print(f"   ✓ Tìm thấy {len(valid)} trận")
 
-        print("\n📊 BƯỚC 2: Phân tích trận & lấy logo...")
+            if "-vs-" in href:
+
+                if href not in seen:
+
+                    seen.add(href)
+
+                    valid.append(link)
+
+        if LIMIT_MATCHES:
+            valid = valid[:LIMIT_MATCHES]
+
+        print(f"✅ FOUND {len(valid)} MATCHES")
+
         for i, el in enumerate(valid):
+
             try:
+
                 href = el.get_attribute("href") or ""
-                if href and not href.startswith("http"): href = "/".join(TARGET_SITE.split("/")[:3]) + href
-                doi_nha, doi_khach, thoi_gian = parse_url_to_info(href)
 
-                # Nâng cấp lấy logo trực tiếp từ web (Lazy load)
-                logo_nha, logo_khach = "", ""
-                try:
-                    imgs = el.locator("img").all()
-                    if len(imgs) >= 2:
-                        src_nha = imgs[0].get_attribute("data-lazy-src") or imgs[0].get_attribute("data-src") or imgs[0].get_attribute("src")
-                        src_khach = imgs[1].get_attribute("data-lazy-src") or imgs[1].get_attribute("data-src") or imgs[1].get_attribute("src")
-                        if src_nha and ".gif" not in src_nha: logo_nha = src_nha if src_nha.startswith("http") else f"https://bunchatv4.net{src_nha}"
-                        if src_khach and ".gif" not in src_khach: logo_khach = src_khach if src_khach.startswith("http") else f"https://bunchatv4.net{src_khach}"
-                except: pass
-                
-                # Gọi hệ thống cào Logo nếu trên web thiếu ảnh
-                if not logo_nha: logo_nha = get_team_logo(doi_nha)
-                if not logo_khach: logo_khach = get_team_logo(doi_khach)
+                if href and not href.startswith("http"):
 
-                # Thuật toán LIVE theo thời gian thực (-10 phút)
-                is_live, status = False, "Chưa đá ⏳"
-                try:
-                    match_time = datetime.datetime.strptime(thoi_gian, "%H:%M %d/%m/%Y").replace(tzinfo=VN_TZ)
-                    diff_minutes = (datetime.datetime.now(VN_TZ) - match_time).total_seconds() / 60
-                    if -10 <= diff_minutes <= 120:  
-                        is_live, status = True, "Đang trực tiếp 🔴"
-                    elif diff_minutes > 120:
-                        status = "Đã kết thúc 🏁"
-                except:
-                    if any(kw in el.inner_text().upper() for kw in ["LIVE", "HIỆP", "PHÚT"]):
-                        is_live, status = True, "Đang trực tiếp 🔴"
+                    href = (
+                        "/".join(TARGET_SITE.split("/")[:3])
+                        + href
+                    )
+
+                doi_nha, doi_khach, thoi_gian = (
+                    parse_url_to_info(href)
+                )
+
+                is_live = True
 
                 matches_data.append({
-                    "id": str(i + 1), "title": f"{doi_nha} vs {doi_khach}",
-                    "doi_nha": doi_nha, "doi_khach": doi_khach,
-                    "trang_thai": status, "is_live": is_live, "thoi_gian": thoi_gian,
-                    "logo_nha": logo_nha, "logo_khach": logo_khach,
-                    "link_xem": href, "stream_url": WAITING_VIDEO_URL,
-                })
-                print(f"   [{i+1:2d}/{len(valid)}] {'🔴' if is_live else '⚪'} {doi_nha} vs {doi_khach}  |  {thoi_gian}")
-            except Exception as e: print(f"   [!] Lỗi trận {i+1}: {e}")
-            
-        main_page.close() 
+                    "id": str(i + 1),
 
-        live_matches = [m for m in matches_data if m["is_live"]]
-        print(f"\n🎥 BƯỚC 3: Bắt luồng {len(live_matches)} trận live...")
+                    "title":
+                        f"{doi_nha} vs {doi_khach}",
+
+                    "doi_nha": doi_nha,
+
+                    "doi_khach": doi_khach,
+
+                    "thoi_gian": thoi_gian,
+
+                    "is_live": is_live,
+
+                    "logo_nha":
+                        get_team_logo(doi_nha),
+
+                    "logo_khach":
+                        get_team_logo(doi_khach),
+
+                    "stream_url":
+                        WAITING_VIDEO_URL,
+
+                    "link_xem": href,
+                })
+
+                print(
+                    f"[{i+1}] "
+                    f"{doi_nha} vs {doi_khach}"
+                )
+
+            except Exception as e:
+
+                print("❌", e)
+
+        page.close()
+
+        # ======================
+        # CAPTURE STREAM
+        # ======================
+        live_matches = [
+            m for m in matches_data
+            if m["is_live"]
+        ]
+
+        print(
+            f"\n🎥 CAPTURE "
+            f"{len(live_matches)} STREAMS"
+        )
+
         for idx, match in enumerate(live_matches):
-            print(f"\n   [{idx+1}/{len(live_matches)}] {match['title']}")
-            stream = capture_stream(ctx, match["link_xem"])
+
+            print(
+                f"\n[{idx+1}/{len(live_matches)}]"
+            )
+
+            print(match["title"])
+
+            stream = capture_stream(
+                ctx,
+                match["link_xem"]
+            )
+
             if stream:
+
                 match["stream_url"] = stream
-                print(f"         📡 {stream[:70]}...")
-            else: print("         ❌ Không tìm được luồng")
+
+                print("✅ GOT STREAM")
+
+            else:
+
+                print("❌ NO STREAM")
 
         browser.close()
 
     if not matches_data:
-        print("\n❌ Không có dữ liệu!")
+
+        print("❌ NO DATA")
+
         return
 
-    live_cnt = sum(1 for m in matches_data if m["is_live"])
-    stream_cnt = sum(1 for m in matches_data if m["stream_url"] != WAITING_VIDEO_URL)
-    push_to_github(create_json(matches_data), live_cnt, stream_cnt)
-    
-    print(f"\n{'='*65}\n✅ XONG — {len(matches_data)} trận | {live_cnt} live | {stream_cnt} có luồng\n{'='*65}")
+    live_cnt = sum(
+        1 for m in matches_data
+        if m["is_live"]
+    )
 
+    stream_cnt = sum(
+        1 for m in matches_data
+        if m["stream_url"] != WAITING_VIDEO_URL
+    )
+
+    content = create_json(matches_data)
+
+    push_to_github(
+        content,
+        live_cnt,
+        stream_cnt
+    )
+
+    print("\n" + "=" * 70)
+
+    print(
+        f"✅ DONE | "
+        f"{len(matches_data)} matches | "
+        f"{stream_cnt} streams"
+    )
+
+    print("=" * 70)
+
+
+# ==========================================
+# RUN
+# ==========================================
 if __name__ == "__main__":
+
     scrape_and_push()
