@@ -1,24 +1,11 @@
 {
   "playlist_name": "Sáng TV",
-  "last_updated": "12:27 09/05/2026",
-  "total_live": 20,
+  "last_updated": "12:40 09/05/2026",
+  "total_live": 30,
   "total_streams": 0,
   "matches": [
     {
       "id": "1",
-      "title": "Gold Coast United Women vs Capalaba W",
-      "doi_nha": "Gold Coast United Women",
-      "doi_khach": "Capalaba W",
-      "trang_thai": "Đang trực tiếp 🔴",
-      "is_live": true,
-      "thoi_gian": "10:30 09/05/2026",
-      "logo_nha": "https://ui-avatars.com/api/?name=GCU&size=200&background=1565C0&color=ffffff&bold=true&format=png",
-      "logo_khach": "https://ui-avatars.com/api/?name=CW&size=200&background=1565C0&color=ffffff&bold=true&format=png",
-      "link_xem": "https://bunchatv4.net/truc-tiep/gold-coast-united-women-vs-capalaba-w-1030-09-05-2026/601455154",
-      "stream_url": "https://example.com/video-cho.mp4"
-    },
-    {
-      "id": "2",
       "title": "Wellington Olympic vs Wellington Phoenix Reserve",
       "doi_nha": "Wellington Olympic",
       "doi_khach": "Wellington Phoenix Reserve",
@@ -31,7 +18,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "3",
+      "id": "2",
       "title": "Albirex Niigata Ladies vs Nojima Stella Kanagawa Sagamihara",
       "doi_nha": "Albirex Niigata Ladies",
       "doi_khach": "Nojima Stella Kanagawa Sagamihara",
@@ -44,7 +31,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "4",
+      "id": "3",
       "title": "Weston Workers Fc vs Valentine",
       "doi_nha": "Weston Workers Fc",
       "doi_khach": "Valentine",
@@ -57,7 +44,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "5",
+      "id": "4",
       "title": "Nittaidai Smg Yokohama vs Ngu Nagoya W",
       "doi_nha": "Nittaidai Smg Yokohama",
       "doi_khach": "Ngu Nagoya W",
@@ -70,7 +57,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "6",
+      "id": "5",
       "title": "Vonds Ichihara W vs Yokohama Fc Seagulls W",
       "doi_nha": "Vonds Ichihara W",
       "doi_khach": "Yokohama Fc Seagulls W",
@@ -83,7 +70,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "7",
+      "id": "6",
       "title": "Melbourne City Women vs Melbourne Victory W",
       "doi_nha": "Melbourne City Women",
       "doi_khach": "Melbourne Victory W",
@@ -96,7 +83,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "8",
+      "id": "7",
       "title": "South Melbourne W vs Melbourne City Youthw",
       "doi_nha": "South Melbourne W",
       "doi_khach": "Melbourne City Youthw",
@@ -109,7 +96,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "9",
+      "id": "8",
       "title": "Devonport City vs Glenorchy Knights Fc",
       "doi_nha": "Devonport City",
       "doi_khach": "Glenorchy Knights Fc",
@@ -122,7 +109,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "10",
+      "id": "9",
       "title": "Launceston City vs South Hobart",
       "doi_nha": "Launceston City",
       "doi_khach": "South Hobart",
@@ -135,7 +122,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "11",
+      "id": "10",
       "title": "Riverside Olympic vs South East United Fc",
       "doi_nha": "Riverside Olympic",
       "doi_khach": "South East United Fc",
@@ -148,20 +135,20 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "12",
+      "id": "11",
       "title": "Unsw Fc W vs Maca Searle W",
       "doi_nha": "Unsw Fc W",
       "doi_khach": "Maca Searle W",
       "trang_thai": "Đang trực tiếp 🔴",
       "is_live": true,
-      "thoi_gian": "11:50 09/05/2026",
+      "thoi_gian": "11:45 09/05/2026",
       "logo_nha": "https://ui-avatars.com/api/?name=UFW&size=200&background=1565C0&color=ffffff&bold=true&format=png",
       "logo_khach": "https://ui-avatars.com/api/?name=MSW&size=200&background=1565C0&color=ffffff&bold=true&format=png",
-      "link_xem": "https://bunchatv4.net/truc-tiep/unsw-fc-w-vs-maca-searle-w-1150-09-05-2026/601444957",
+      "link_xem": "https://bunchatv4.net/truc-tiep/unsw-fc-w-vs-maca-searle-w-1145-09-05-2026/601444957",
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "13",
+      "id": "12",
       "title": "Alamein W vs Melbourne Victory Fc Youthw",
       "doi_nha": "Alamein W",
       "doi_khach": "Melbourne Victory Fc Youthw",
@@ -174,7 +161,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "14",
+      "id": "13",
       "title": "Jecheon Citizen Fc vs Haman Fc",
       "doi_nha": "Jecheon Citizen Fc",
       "doi_khach": "Haman Fc",
@@ -187,7 +174,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "15",
+      "id": "14",
       "title": "Gijang United vs Namyangju Citizen",
       "doi_nha": "Gijang United",
       "doi_khach": "Namyangju Citizen",
@@ -200,7 +187,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "16",
+      "id": "15",
       "title": "Mito Hollyhock vs Urawa Red Diamonds",
       "doi_nha": "Mito Hollyhock",
       "doi_khach": "Urawa Red Diamonds",
@@ -213,7 +200,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "17",
+      "id": "16",
       "title": "Western Sydney Wanderers Am vs Wollongong Wolves",
       "doi_nha": "Western Sydney Wanderers Am",
       "doi_khach": "Wollongong Wolves",
@@ -226,7 +213,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "18",
+      "id": "17",
       "title": "Avondale Fc vs Altona Magic",
       "doi_nha": "Avondale Fc",
       "doi_khach": "Altona Magic",
@@ -239,7 +226,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "19",
+      "id": "18",
       "title": "Thespa Kusatsu Gunma vs Tochigi City",
       "doi_nha": "Thespa Kusatsu Gunma",
       "doi_khach": "Tochigi City",
@@ -252,7 +239,7 @@
       "stream_url": "https://example.com/video-cho.mp4"
     },
     {
-      "id": "20",
+      "id": "19",
       "title": "Iwaki Fc vs Ventforet Kofu",
       "doi_nha": "Iwaki Fc",
       "doi_khach": "Ventforet Kofu",
@@ -262,6 +249,149 @@
       "logo_nha": "https://ui-avatars.com/api/?name=IF&size=200&background=1565C0&color=ffffff&bold=true&format=png",
       "logo_khach": "https://ui-avatars.com/api/?name=VK&size=200&background=1565C0&color=ffffff&bold=true&format=png",
       "link_xem": "https://bunchatv4.net/truc-tiep/iwaki-fc-vs-ventforet-kofu-1200-09-05-2026/601444804",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "20",
+      "title": "Renofa Yamaguchi vs Tegevajaro Miyazaki",
+      "doi_nha": "Renofa Yamaguchi",
+      "doi_khach": "Tegevajaro Miyazaki",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=RY&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=TM&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/renofa-yamaguchi-vs-tegevajaro-miyazaki-1200-09-05-2026/601444807",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "21",
+      "title": "Hokkaido Consadole Sapporo vs Rb Omiya Ardija",
+      "doi_nha": "Hokkaido Consadole Sapporo",
+      "doi_khach": "Rb Omiya Ardija",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=HCS&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=ROA&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/hokkaido-consadole-sapporo-vs-rb-omiya-ardija-1200-09-05-2026/601444810",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "22",
+      "title": "Fc Osaka vs Imabari Fc",
+      "doi_nha": "Fc Osaka",
+      "doi_khach": "Imabari Fc",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=FO&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=IF&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/fc-osaka-vs-imabari-fc-1200-09-05-2026/601444813",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "23",
+      "title": "Jeju Sk Fc vs Football Club Seoul",
+      "doi_nha": "Jeju Sk Fc",
+      "doi_khach": "Football Club Seoul",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=JSF&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=FCS&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/jeju-sk-fc-vs-football-club-seoul-1200-09-05-2026/601444816",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "24",
+      "title": "Chungnam Asan vs Seoul Eland Fc",
+      "doi_nha": "Chungnam Asan",
+      "doi_khach": "Seoul Eland Fc",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=CA&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=SEF&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/chungnam-asan-vs-seoul-eland-fc-1200-09-05-2026/601444819",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "25",
+      "title": "Hwaseong Fc vs Suwon Football Club",
+      "doi_nha": "Hwaseong Fc",
+      "doi_khach": "Suwon Football Club",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=HF&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=SFC&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/hwaseong-fc-vs-suwon-football-club-1200-09-05-2026/601444822",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "26",
+      "title": "Busan Transportation Corporation vs Mokpo City",
+      "doi_nha": "Busan Transportation Corporation",
+      "doi_khach": "Mokpo City",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=BTC&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=MC&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/busan-transportation-corporation-vs-mokpo-city-1200-09-05-2026/601444825",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "27",
+      "title": "Chuncheon Citizen vs Pocheon Fc",
+      "doi_nha": "Chuncheon Citizen",
+      "doi_khach": "Pocheon Fc",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=CC&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=PF&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/chuncheon-citizen-vs-pocheon-fc-1200-09-05-2026/601444828",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "28",
+      "title": "Jeonbuk Hyundai Motors Ii vs Yeoju Citizen",
+      "doi_nha": "Jeonbuk Hyundai Motors Ii",
+      "doi_khach": "Yeoju Citizen",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=JHM&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=YC&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/jeonbuk-hyundai-motors-ii-vs-yeoju-citizen-1200-09-05-2026/601444831",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "29",
+      "title": "Oconnor Knights vs Monaro Panthers",
+      "doi_nha": "Oconnor Knights",
+      "doi_khach": "Monaro Panthers",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=OK&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=MP&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/oconnor-knights-vs-monaro-panthers-1200-09-05-2026/601444837",
+      "stream_url": "https://example.com/video-cho.mp4"
+    },
+    {
+      "id": "30",
+      "title": "Tuggeranong United vs Canberra Olympic",
+      "doi_nha": "Tuggeranong United",
+      "doi_khach": "Canberra Olympic",
+      "trang_thai": "Đang trực tiếp 🔴",
+      "is_live": true,
+      "thoi_gian": "12:00 09/05/2026",
+      "logo_nha": "https://ui-avatars.com/api/?name=TU&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "logo_khach": "https://ui-avatars.com/api/?name=CO&size=200&background=1565C0&color=ffffff&bold=true&format=png",
+      "link_xem": "https://bunchatv4.net/truc-tiep/tuggeranong-united-vs-canberra-olympic-1200-09-05-2026/601444840",
       "stream_url": "https://example.com/video-cho.mp4"
     }
   ]
